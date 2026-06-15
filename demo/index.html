@@ -13,7 +13,7 @@
     user-select: none;
   }
 
-  /* ========== 手机画框（9:16 竖屏，486×864 canvas → 显示 360×640） ========== */
+  /* ========== 手机画框（9:16 竖屏，360×640） ========== */
   .phone {
     position: relative;
     width: 360px;
@@ -22,60 +22,93 @@
     box-shadow: 0 20px 60px rgba(160,130,109,0.4), 0 0 0 8px rgba(255,248,231,0.6);
     overflow: hidden;
     cursor: pointer;
+    background: #FFF8E7;
   }
 
-  /* Layer 1: 背景图（来自 triptych 中 panel，已含 logo + 主角 + 场景） */
+  /* Layer 1: 背景图（中 panel，含 logo + 主角 + 场景） */
   .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 
-  /* Layer 2: 5 张 sprite 卡（default 状态 = 弧形布局，复刻 triptych 左 panel） */
-  .cards-arc {
+  /* ========== CSS 渲染的 5 张卡（共用样式） ========== */
+  .card {
     position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-  }
-  .card-arc {
-    position: absolute;
-    width: 100px;
-    height: 140px;
-    object-fit: contain;
+    width: 64px;
+    height: 92px;
+    border-radius: 12px;
+    background: rgba(255, 248, 231, 0.88);
+    border: 2px solid rgba(168, 230, 207, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6B4F3A;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(160,130,109,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px) saturate(1.3);
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
     transform-origin: center center;
-    transform: translate(-50%, -50%) scale(1);
+    pointer-events: none;
+    white-space: nowrap;
     transition:
       left 1.5s cubic-bezier(0.40, 0.80, 0.74, 1.00),
       top 1.5s cubic-bezier(0.40, 0.80, 0.74, 1.00),
       transform 1.5s cubic-bezier(0.40, 0.80, 0.74, 1.00);
   }
+  .card-rare {
+    background: linear-gradient(180deg, rgba(255, 248, 231, 0.95) 0%, rgba(244, 201, 93, 0.85) 100%);
+    border-color: #F4C95D;
+    box-shadow: 0 8px 24px rgba(244,201,93,0.55), 0 0 0 1.5px #F4C95D, inset 0 1px 0 rgba(255,255,255,0.7);
+    animation: rareGlow 2.5s ease-in-out infinite;
+  }
+  @keyframes rareGlow {
+    0%, 100% { box-shadow: 0 8px 24px rgba(244,201,93,0.55), 0 0 0 1.5px #F4C95D, inset 0 1px 0 rgba(255,255,255,0.7); }
+    50%      { box-shadow: 0 10px 32px rgba(244,201,93,0.85), 0 0 0 2.5px #F4C95D, 0 0 20px rgba(244,201,93,0.4), inset 0 1px 0 rgba(255,255,255,0.7); }
+  }
+  .card-name { font-size: 10px; letter-spacing: 0.5px; color: #6B4F3A; opacity: 0.85; margin-bottom: 2px; font-weight: 700; }
+  .card-discount {
+    font-size: 18px; line-height: 1; font-weight: 900; margin: 2px 0;
+    color: #6B4F3A; white-space: nowrap;
+  }
+  .card-prob { font-size: 12px; color: #6B4F3A; opacity: 0.75; font-weight: 700; margin-top: 3px; }
+
   /* 3 等级缩放（沿用 triptych 左 panel 视觉） */
-  .card-arc.tier-outer  { transform: translate(-50%, -50%) scale(0.86); }
-  .card-arc.tier-inner  { transform: translate(-50%, -50%) scale(1.00); }
-  .card-arc.tier-center { transform: translate(-50%, -50%) scale(1.18); }
+  .card.tier-outer  { transform: translate(-50%, -50%) scale(0.86); z-index: 3; }
+  .card.tier-inner  { transform: translate(-50%, -50%) scale(1.00); z-index: 4; }
+  .card.tier-center { transform: translate(-50%, -50%) scale(1.18); z-index: 5; }
+
   /* 收拢状态：所有卡 → 水平等大（inner），top 47% */
-  .card-arc.collapsed {
+  .card.collapsed {
     top: 47% !important;
     transform: translate(-50%, -50%) scale(1.00) !important;
+    z-index: 4 !important;
   }
-  .card-arc.fade-out { opacity: 0; }
+  .card.fade-out { opacity: 0; }
 
-  /* Layer 3: "立即抽奖" 按钮（default 状态显示） */
+  /* Layer 3: "立即抽奖" 按钮（金黄色更协调） */
   .draw-btn {
     position: absolute;
     left: 50%;
-    bottom: 9%;
+    bottom: 6%;
     transform: translateX(-50%);
-    z-index: 6;
-    padding: 14px 48px;
-    background: linear-gradient(180deg, #A8E6CF 0%, #7FCFA8 100%);
-    color: white;
-    border: none;
+    z-index: 20;
+    padding: 12px 36px;
+    background: linear-gradient(180deg, #F4C95D 0%, #E0A82F 100%);
+    color: #6B4F3A;
+    border: 2.5px solid #FFF8E7;
     border-radius: 30px;
     font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 4px;
-    box-shadow: 0 6px 20px rgba(168,230,207,0.6);
+    font-weight: 900;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(244,201,93,0.7), 0 2px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
     cursor: pointer;
-    pointer-events: none;     /* 让 phone 接收点击 */
-    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+    animation: btnPulse 2s ease-in-out infinite;
+  }
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 8px 24px rgba(244,201,93,0.7), 0 2px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5); }
+    50%      { box-shadow: 0 10px 32px rgba(244,201,93,0.9), 0 4px 8px rgba(0,0,0,0.2), 0 0 24px rgba(244,201,93,0.4), inset 0 1px 0 rgba(255,255,255,0.5); }
   }
   .draw-btn.hidden {
     opacity: 0;
@@ -83,18 +116,17 @@
     pointer-events: none;
   }
 
-  /* Layer 4: 老虎机 viewport（覆盖在 5 张卡收拢后位置） */
+  /* ========== 老虎机 viewport ========== */
   .reel-viewport {
     position: absolute;
     top: 36%; left: 0; right: 0;
     height: 23%;
     overflow: hidden;
-    z-index: 7;
+    z-index: 10;
     opacity: 0;
     transition: opacity 0.3s;
   }
   .reel-viewport.active { opacity: 1; }
-  /* 老虎机中心线 */
   .reel-viewport::after {
     content: ""; position: absolute;
     top: 0; bottom: 0; left: 50%;
@@ -114,39 +146,32 @@
     height: 100%;
     will-change: transform;
   }
-  .card-sprite {
+  .reel .card {
+    position: relative;
+    left: auto; top: auto;
     flex-shrink: 0;
-    width: 100px;
-    height: 140px;
     margin: 0 4px;
-    object-fit: contain;
-    transition: transform 1.5s cubic-bezier(0.40, 0.80, 0.74, 1.00);
   }
-  .card-sprite.outer  { transform: scale(0.86);  z-index: 1; }
-  .card-sprite.inner  { transform: scale(1.00);  z-index: 2; }
-  .card-sprite.center { transform: scale(1.18);  z-index: 3; }
-  .card-sprite.collapsed { transform: scale(1.00) !important; }
+  .reel .card.tier-outer  { transform: scale(0.86); }
+  .reel .card.tier-inner  { transform: scale(1.00); }
+  .reel .card.tier-center { transform: scale(1.18); z-index: 5; }
+  .reel .card.collapsed { transform: scale(1.00) !important; }
 
-  /* ========== 提示 hint（首次显示 3 秒后消失） ========== */
+  /* ========== 提示 hint（默认隐藏，避免与按钮重复引导） ========== */
   .hint {
     position: absolute;
-    bottom: 12%; left: 50%;
+    top: 4%; left: 50%;
     transform: translateX(-50%);
-    z-index: 20;
+    z-index: 8;
     background: rgba(160,130,109,0.85);
     color: white;
-    padding: 8px 18px;
+    padding: 6px 16px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    animation: hintPulse 1.5s ease-in-out infinite;
     pointer-events: none;
+    display: none;  /* 默认隐藏 */
   }
-  @keyframes hintPulse {
-    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-    50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
-  }
-  .hint.hidden { display: none; }
 
   /* ========== 中奖弹窗 ========== */
   .result-popup {
@@ -177,9 +202,8 @@
     font-size: 22px; color: #6B4F3A;
     cursor: pointer; opacity: 0.5;
   }
-  .result-title { font-size: 14px; color: #6B4F3A; opacity: 0.7; }
-  .result-card-img { width: 100px; height: 140px; margin: 8px auto; object-fit: contain; }
-  .result-name { font-size: 20px; font-weight: 800; color: #A0826D; }
+  .result-title { font-size: 14px; color: #6B4F3A; opacity: 0.7; margin-bottom: 8px; }
+  .result-name { font-size: 20px; font-weight: 800; color: #A0826D; margin-top: 12px; }
   .result-discount { font-size: 36px; font-weight: 800; color: #A0826D; margin: 6px 0; }
   .result-tip { font-size: 12px; color: #6B4F3A; opacity: 0.6; margin-top: 10px; }
 
@@ -192,13 +216,13 @@
 </head>
 <body>
   <div class="phone" id="phone">
-    <!-- Layer 1: 背景图（中 panel，含 logo + 主角 + 场景） -->
+    <!-- Layer 1: 背景图（中 panel） -->
     <img class="bg" src="background-hires.png" alt="" />
 
-    <!-- Layer 2: 5 张 sprite 卡（default 弧形 / 收拢水平，由 JS 渲染） -->
-    <div class="cards-arc" id="cardsArc"></div>
+    <!-- Layer 2: 5 张 CSS 渲染的卡（default 弧形） -->
+    <div id="cardsArc"></div>
 
-    <!-- Layer 3: "立即抽奖" 按钮（default 显示，spinning 隐藏） -->
+    <!-- Layer 3: "立即抽奖" 按钮 -->
     <button class="draw-btn" id="drawBtn">立即抽奖</button>
 
     <!-- Layer 4: 老虎机 viewport -->
@@ -206,7 +230,7 @@
       <div class="reel" id="reel"></div>
     </div>
 
-    <!-- 提示 hint -->
+    <!-- 提示 hint（顶部） -->
     <div class="hint" id="hint">👆 点击屏幕抽奖</div>
 
     <!-- 中奖弹窗 -->
@@ -214,7 +238,7 @@
       <div class="result-card">
         <button class="close" id="closePopup">×</button>
         <div class="result-title">恭喜抽中</div>
-        <img class="result-card-img" id="popupCard" src="" alt="" />
+        <div id="popupCardHolder"></div>
         <div class="result-name" id="popupName">奶茶券</div>
         <div class="result-discount" id="popupDiscount">9.8折</div>
         <div class="result-tip">到店出示即可享受</div>
@@ -223,7 +247,7 @@
   </div>
 
 <script type="module">
-import { COUPONS, ARC_ORDER, POSITION_TIER, ARC_POSITIONS, weightedPick, PityCounter, SlotLayout, ANIM } from './game.js';
+import { COUPONS, ARC_ORDER, POSITION_TIER, ARC_POSITIONS, weightedPick, PityCounter, SlotLayout, ANIM, SLOT_WINNER_INDEX } from './game.js';
 
 const phone = document.getElementById('phone');
 const cardsArc = document.getElementById('cardsArc');
@@ -232,7 +256,7 @@ const reelViewport = document.getElementById('reelViewport');
 const reel = document.getElementById('reel');
 const hint = document.getElementById('hint');
 const popup = document.getElementById('popup');
-const popupCard = document.getElementById('popupCard');
+const popupCardHolder = document.getElementById('popupCardHolder');
 const popupName = document.getElementById('popupName');
 const popupDiscount = document.getElementById('popupDiscount');
 const closePopup = document.getElementById('closePopup');
@@ -240,47 +264,55 @@ const closePopup = document.getElementById('closePopup');
 const pity = new PityCounter();
 let isSpinning = false;
 
-// ====== 渲染 default 状态的 5 张卡（弧形布局，复刻 triptych 左 panel） ======
+// 折扣数字拆成 num + unit (例 "9.8折" → num=9.8, unit=折)
+function splitDiscount(discount) {
+  const m = discount.match(/^(\d+(?:\.\d+)?)(.*)$/);
+  if (m) return { num: m[1], unit: m[2] };
+  return { num: discount, unit: '' };
+}
+
+// ====== 创建 CSS 渲染的卡 DOM ======
+function createCardEl(coupon) {
+  const div = document.createElement('div');
+  div.className = `card ${coupon.rare ? 'card-rare' : ''}`;
+  const { num, unit } = splitDiscount(coupon.discount);
+  div.innerHTML = `
+    <div class="card-name">${coupon.name}</div>
+    <div class="card-discount"><span class="num">${num}</span><span class="unit">${unit}</span></div>
+    <div class="card-prob">${coupon.prob}%</div>
+  `;
+  div.dataset.id = coupon.id;
+  return div;
+}
+
+// ====== 渲染 default 状态的 5 张卡（弧形布局） ======
 function renderArcCards() {
   cardsArc.innerHTML = '';
   ARC_ORDER.forEach((id, idx) => {
     const coupon = COUPONS.find(c => c.id === id);
     const posKey = `P${idx + 1}`;
     const pos = ARC_POSITIONS[posKey];
-    const img = document.createElement('img');
-    img.className = `card-arc tier-${pos.tier}`;
-    img.style.left = `${pos.x}%`;
-    img.style.top = `${pos.y}%`;
-    img.src = `cards/card-${idx + 1}.png`;
-    img.alt = `${coupon.name} ${coupon.discount}`;
-    img.dataset.id = id;
-    cardsArc.appendChild(img);
+    const el = createCardEl(coupon);
+    el.classList.add(`tier-${pos.tier}`);
+    el.style.left = `${pos.x}%`;
+    el.style.top = `${pos.y}%`;
+    cardsArc.appendChild(el);
   });
 }
 renderArcCards();
 
-// ====== 渲染老虎机 reel（40 张 sprite）======
+// ====== 渲染老虎机 reel ======
 function renderReel(winnerId) {
   reel.innerHTML = '';
   const layout = SlotLayout.build(winnerId);
   layout.forEach((card, idx) => {
+    const coupon = COUPONS.find(c => c.id === card.id);
     const tier = idx === SLOT_WINNER_INDEX ? 'center' : POSITION_TIER[card.position];
-    const img = document.createElement('img');
-    img.className = `card-sprite ${tier}`;
-    img.src = `cards/${spriteFileFor(card.id)}`;
-    img.alt = `${COUPONS.find(c => c.id === card.id).name}`;
-    img.dataset.id = card.id;
-    reel.appendChild(img);
+    const el = createCardEl(coupon);
+    el.classList.add(`tier-${tier}`);
+    reel.appendChild(el);
   });
 }
-
-// sprite 文件映射：C1→card-1, C3→card-2, C5→card-3, C4→card-4, C2→card-5
-function spriteFileFor(couponId) {
-  const map = { C1: 1, C3: 2, C5: 3, C4: 4, C2: 5 };
-  return `card-${map[couponId]}.png`;
-}
-
-const SLOT_WINNER_INDEX = 35;  // 与 game.js 保持一致
 
 // ====== 点击触发抽奖 ======
 phone.addEventListener('click', () => {
@@ -294,18 +326,16 @@ phone.addEventListener('click', () => {
   const result = pity.apply(expected);
 
   // 2. 5 张卡从弧形收拢到水平（等大 inner）
-  document.querySelectorAll('.card-arc').forEach(c => c.classList.add('collapsed'));
+  document.querySelectorAll('#cardsArc .card').forEach(c => c.classList.add('collapsed'));
 
   // 3. 1500ms 收拢动画后 → 切到老虎机
   setTimeout(() => {
-    // 弧形卡淡出
-    document.querySelectorAll('.card-arc').forEach(c => c.classList.add('fade-out'));
-    // 老虎机 viewport 淡入
+    document.querySelectorAll('#cardsArc .card').forEach(c => c.classList.add('fade-out'));
     reelViewport.classList.add('active');
     renderReel(result.id);
 
     // 4. 触发老虎机滚动
-    const cardWidth = 108;  // 100 + 4*2 margin
+    const cardWidth = 112;  // 104 + 4*2 margin
     const offset = SlotLayout.finalOffset(cardWidth);
     reel.style.transition = `transform ${ANIM.SPIN_DURATION}ms ${ANIM.SPIN_EASING}`;
     void reel.offsetWidth;
@@ -320,7 +350,15 @@ phone.addEventListener('click', () => {
 });
 
 function showResult(coupon) {
-  popupCard.src = `cards/${spriteFileFor(coupon.id)}`;
+  popupCardHolder.innerHTML = '';
+  const el = createCardEl(coupon);
+  // 弹窗里 card 不要 absolute
+  el.style.position = 'relative';
+  el.style.left = 'auto';
+  el.style.top = 'auto';
+  el.style.transform = 'none';
+  el.style.margin = '8px auto';
+  popupCardHolder.appendChild(el);
   popupName.textContent = coupon.name;
   popupDiscount.textContent = coupon.discount;
   popup.classList.add('show');
@@ -331,8 +369,9 @@ closePopup.addEventListener('click', (e) => {
   popup.classList.remove('show');
   // 重置
   setTimeout(() => {
-    cardsArc.classList.remove('fade-out');
-    document.querySelectorAll('.card-arc').forEach(c => c.classList.remove('collapsed'));
+    document.querySelectorAll('#cardsArc .card').forEach(c => {
+      c.classList.remove('collapsed', 'fade-out');
+    });
     reelViewport.classList.remove('active');
     reel.style.transition = 'none';
     reel.style.transform = 'translate(-50%, -50%) translateX(0)';
