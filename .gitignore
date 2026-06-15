@@ -1,0 +1,15 @@
+# ============ 测试产物（不提交）============
+# 5 次重跑测试图
+triptych-run*.png
+# opencli 临时输出（带时间戳）
+chatgpt_*.png
+# 旧版本备份
+triptych.png
+# 系统文件
+.DS_Store
+Thumbs.db
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
