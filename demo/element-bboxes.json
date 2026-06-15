@@ -1,0 +1,65 @@
+{
+  "source": "elements.png",
+  "size": [
+    486,
+    864
+  ],
+  "transparent_png": "elements-transparent.png",
+  "cards": [
+    {
+      "id": "card-1",
+      "x": 80,
+      "y1": 260,
+      "y2": 460,
+      "x1": 33,
+      "x2": 127,
+      "w": 94,
+      "h": 200,
+      "path": "cards/card-1.png"
+    },
+    {
+      "id": "card-2",
+      "x": 160,
+      "y1": 260,
+      "y2": 460,
+      "x1": 113,
+      "x2": 207,
+      "w": 94,
+      "h": 200,
+      "path": "cards/card-2.png"
+    },
+    {
+      "id": "card-3",
+      "x": 243,
+      "y1": 260,
+      "y2": 460,
+      "x1": 196,
+      "x2": 290,
+      "w": 94,
+      "h": 200,
+      "path": "cards/card-3.png"
+    },
+    {
+      "id": "card-4",
+      "x": 325,
+      "y1": 260,
+      "y2": 460,
+      "x1": 278,
+      "x2": 372,
+      "w": 94,
+      "h": 200,
+      "path": "cards/card-4.png"
+    },
+    {
+      "id": "card-5",
+      "x": 405,
+      "y1": 260,
+      "y2": 460,
+      "x1": 358,
+      "x2": 452,
+      "w": 94,
+      "h": 200,
+      "path": "cards/card-5.png"
+    }
+  ]
+}
