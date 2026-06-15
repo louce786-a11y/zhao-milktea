@@ -38,15 +38,16 @@ export const SLOT_WINNER_INDEX = 35;      // 中奖卡在 reel 位置
 // ===== 5 张 sprite 卡在 default 状态的位置（弧形布局，复刻 triptych 左 panel）=====
 // x, y 是中心点坐标（百分比，相对 phone canvas 360×640）
 // 顺序对应 ARC_ORDER：[C1, C3, C5, C4, C2] = [9.8折, 8折, 5折, 7折, 9折]
-// 卡 width=68px, 5 张平分 phone 宽 (68*5 + 8*4 = 372 ≈ 360)
-// 中心点 x: 12%/30%/50%/70%/88%，边距安全
+// 卡 width=78px, 5 张平分 phone 宽 (78*5 + 4*4 = 406 > 360, 重叠 46px)
+// 用 3 等级 scale 错位避免重叠 + 弧形布局
+// 中心点 x: 14/32/50/68/86%, 间距 18% = 64.8px, 卡 width 78, 重叠 13px (z-index 解决)
 // y: 中间高、两边低（弧形）
 export const ARC_POSITIONS = {
-  P1: { x: 12, y: 80, tier: 'outer'  },  // C1 (9.8折) 最左
-  P2: { x: 31, y: 76, tier: 'inner'  },  // C3 (8折)   左中
-  P3: { x: 50, y: 72, tier: 'center' },  // C5 (5折)   中心
-  P4: { x: 69, y: 76, tier: 'inner'  },  // C4 (7折)   右中
-  P5: { x: 88, y: 80, tier: 'outer'  },  // C2 (9折)   最右
+  P1: { x: 14, y: 78, tier: 'outer'  },  // C1 (9.8折) 最左
+  P2: { x: 32, y: 73, tier: 'inner'  },  // C3 (8折)   左中
+  P3: { x: 50, y: 68, tier: 'center' },  // C5 (5折)   中心
+  P4: { x: 68, y: 73, tier: 'inner'  },  // C4 (7折)   右中
+  P5: { x: 86, y: 78, tier: 'outer'  },  // C2 (9折)   最右
 };
 export const RARE_WEIGHT_THRESHOLD = 15;  // weight <= 15 视为稀有
 export const DAILY_FREE_DRAWS = 3;        // 每天免费次数
