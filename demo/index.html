@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>传招冷饮 · 夏日冰爽特惠</title>
+<style>
+  /* ========== 主题色（奶茶棕 + 冰激凌奶白 + 薄荷绿 + 金色） ========== */
+  :root {
+    --primary: #A0826D;        /* 奶茶棕（主色） */
+    --base: #FFF8E7;            /* 冰激凌奶白 */
+    --accent: #A8E6CF;          /* 薄荷绿 */
+    --highlight: #F4C95D;       /* 金色（稀有高光） */
+    --text-dark: #6B4F3A;       /* 文字深色（奶茶棕深） */
+    --text-light: #FFFFFF;
+    --tier-outer: 0.86;
+    --tier-inner: 1.00;
+    --tier-center: 1.18;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  body {
+    background: linear-gradient(135deg, #FFF8E7 0%, #F4C95D 30%, #A8E6CF 70%, #A0826D 100%);
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+  }
+
+  /* ========== 手机画框（9:16 竖屏） ========== */
+  .phone {
+    position: relative;
+    width: 360px;
+    height: 640px;
+    background:
+      url('background-hires.png') center/cover no-repeat;
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(160,130,109,0.4), 0 0 0 8px rgba(255,248,231,0.6);
+    overflow: hidden;
+  }
+  /* 暗角 + 暖色叠加，让 UI 更突出 */
+  .phone::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at top, transparent 30%, rgba(160,130,109,0.15) 100%),
+      linear-gradient(180deg, rgba(255,248,231,0.2) 0%, transparent 30%, transparent 70%, rgba(160,130,109,0.25) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ========== 顶部 Logo + 副标 ========== */
+  .logo {
+    position: absolute;
+    top: 24px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    background: linear-gradient(180deg, var(--base) 0%, #F5E8C9 100%);
+    padding: 10px 22px 6px;
+    border-radius: 0 0 24px 24px;
+    border: 2px solid var(--accent);
+    box-shadow: 0 4px 12px rgba(160,130,109,0.3);
+    min-width: 220px;
+  }
+  .logo::before {
+    content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 12px;
+    background: linear-gradient(90deg, transparent 0%, var(--highlight) 50%, transparent 100%);
+    border-radius: 12px 12px 0 0;
+  }
+  .logo-text {
+    font-size: 22px; font-weight: 800; color: var(--primary);
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+  }
+  .logo-subtitle {
+    font-size: 11px; color: var(--text-dark);
+    margin-top: 2px; opacity: 0.8;
+    letter-spacing: 1px;
+  }
+
+  /* ========== 焦点角色位置（背景图自带 Q 版奶茶杯，不重复画） ========== */
+  /* .focus-character 已隐藏：背景图里的奶茶杯就是焦点角色 */
+  .focus-character { display: none; }
+
+  /* ========== 老虎机容器 ========== */
+  .reel-viewport {
+    position: absolute;
+    top: 260px; left: 0; right: 0;
+    height: 200px;
+    overflow: hidden;
+    z-index: 5;
+  }
+  /* 老虎机中心线 */
+  .reel-viewport::after {
+    content: ""; position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    background: var(--highlight);
+    box-shadow: 0 0 8px var(--highlight);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .reel {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) translateX(0);
+    display: flex;
+    align-items: center;
+    height: 200px;
+    will-change: transform;
+  }
+
+  /* ========== 礼物卡（5 张可视 + N 张 reel 卡） ========== */
+  .card {
+    flex-shrink: 0;
+    width: 96px;
+    height: 134px;
+    margin: 0 4px;
+    background: linear-gradient(180deg, var(--base) 0%, #F5E8C9 100%);
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 6px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(160,130,109,0.3);
+    transition: transform 1.5s cubic-bezier(0.40, 0.80, 0.74, 1.00);
+    will-change: transform;
+  }
+  /* 3 等级等比缩放（初始） */
+  .card.outer  { transform: scale(var(--tier-outer));  z-index: 1; }
+  .card.inner  { transform: scale(var(--tier-inner));  z-index: 2; }
+  .card.center { transform: scale(var(--tier-center)); z-index: 3; }
+  /* 稀有高光（金色） */
+  .card.rare {
+    border-color: var(--highlight);
+    box-shadow: 0 0 0 1px var(--highlight), 0 4px 12px rgba(244,201,93,0.6);
+  }
+  .card.rare::before {
+    content: "✦";
+    position: absolute; top: -8px; right: -8px;
+    width: 22px; height: 22px;
+    background: var(--highlight);
+    color: white; font-size: 12px; line-height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(244,201,93,0.6);
+  }
+  /* 收拢后所有卡 = inner */
+  .card.collapsed {
+    transform: scale(var(--tier-inner)) !important;
+  }
+  /* 收拢后 center 卡变 inner, 加发光 */
+  .card.collapsed.was-center {
+    transform: scale(var(--tier-inner)) !important;
+    box-shadow: 0 0 16px var(--highlight), 0 0 0 2px var(--highlight);
+  }
+
+  .card-flavor {
+    font-size: 28px;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .card-name {
+    font-size: 11px; color: var(--text-dark); font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .card-discount {
+    font-size: 22px; font-weight: 800; color: var(--primary);
+    line-height: 1;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.6);
+  }
+  .card-prob {
+    font-size: 9px; color: var(--text-dark); opacity: 0.6;
+  }
+
+  /* ========== 抽奖按钮 ========== */
+  .draw-btn {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: linear-gradient(180deg, var(--accent) 0%, #7FCFA8 100%);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    border-radius: 30px;
+    box-shadow: 0 6px 20px rgba(168,230,207,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .draw-btn:active { transform: translateX(-50%) scale(0.95); }
+  .draw-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ========== 中奖弹窗 ========== */
+  .result-popup {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .result-popup.show { display: flex; animation: fadeIn 0.4s; }
+  .result-card {
+    width: 240px;
+    background: var(--base);
+    border: 3px solid var(--highlight);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(244,201,93,0.6);
+    animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  .result-card .close {
+    position: absolute; top: 8px; right: 12px;
+    background: none; border: none;
+    font-size: 22px; color: var(--text-dark);
+    cursor: pointer; opacity: 0.5;
+  }
+  .result-title { font-size: 14px; color: var(--text-dark); opacity: 0.7; }
+  .result-flavor { font-size: 56px; margin: 8px 0; }
+  .result-name { font-size: 20px; font-weight: 800; color: var(--primary); }
+  .result-discount { font-size: 36px; font-weight: 800; color: var(--primary); margin: 6px 0; }
+  .result-tip { font-size: 12px; color: var(--text-dark); opacity: 0.6; margin-top: 10px; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ========== 调试信息 ========== */
+  .debug {
+    position: absolute; top: 4px; left: 4px;
+    font-size: 9px; color: rgba(255,255,255,0.6);
+    z-index: 20;
+    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+  }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="debug" id="debug"></div>
+
+    <!-- Logo + 副标 -->
+    <div class="logo">
+      <div class="logo-text">传招冷饮</div>
+      <div class="logo-subtitle">夏日冰爽特惠</div>
+    </div>
+
+    <!-- 焦点角色（Q 版奶茶杯） -->
+    <div class="focus-character">🧋</div>
+
+    <!-- 老虎机 viewport -->
+    <div class="reel-viewport">
+      <div class="reel" id="reel"></div>
+    </div>
+
+    <!-- 抽奖按钮 -->
+    <button class="draw-btn" id="drawBtn">立即抽奖</button>
+
+    <!-- 中奖弹窗 -->
+    <div class="result-popup" id="popup">
+      <div class="result-card">
+        <button class="close" id="closePopup">×</button>
+        <div class="result-title">恭喜抽中</div>
+        <div class="result-flavor" id="popupFlavor">🧋</div>
+        <div class="result-name" id="popupName">微甜尝鲜券</div>
+        <div class="result-discount" id="popupDiscount">9.8折</div>
+        <div class="result-tip">到店出示即可享受</div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+import { COUPONS, ARC_ORDER, POSITION_TIER, weightedPick, PityCounter, SlotLayout, ANIM } from './game.js';
+
+// ===== 初始 5 张卡（可视卡）=====
+const reel = document.getElementById('reel');
+const drawBtn = document.getElementById('drawBtn');
+const popup = document.getElementById('popup');
+const popupFlavor = document.getElementById('popupFlavor');
+const popupName = document.getElementById('popupName');
+const popupDiscount = document.getElementById('popupDiscount');
+const closePopup = document.getElementById('closePopup');
+const debug = document.getElementById('debug');
+
+const pity = new PityCounter();
+
+// 渲染单张卡
+function renderCard(card, isCenter) {
+  const coupon = COUPONS.find(c => c.id === card.id);
+  const tier = isCenter ? 'center' : POSITION_TIER[card.position];
+  const div = document.createElement('div');
+  div.className = `card ${tier}${coupon.rare ? ' rare' : ''}${isCenter ? ' was-center' : ''}`;
+  div.dataset.id = coupon.id;
+  div.innerHTML = `
+    <div class="card-flavor">${coupon.flavor}</div>
+    <div>
+      <div class="card-discount">${coupon.discount}</div>
+    </div>
+    <div class="card-name">${coupon.name}</div>
+    <div class="card-prob">${coupon.prob}%</div>
+  `;
+  return div;
+}
+
+// 初始：5 张可视卡
+function renderInitialCards() {
+  reel.innerHTML = '';
+  ARC_ORDER.forEach((id, idx) => {
+    const card = { id, position: id, tier: POSITION_TIER[id] };
+    reel.appendChild(renderCard(card, idx === 2));
+  });
+}
+renderInitialCards();
+
+// ===== 老虎机 reel 渲染（40 张）=====
+function renderReel(winnerId) {
+  reel.innerHTML = '';
+  const layout = SlotLayout.build(winnerId);
+  // 第 35 张 (winner) 单独标 center, 其他按 position tier
+  layout.forEach((card, idx) => {
+    reel.appendChild(renderCard(card, idx === 35));
+  });
+}
+
+// ===== 抽奖流程 =====
+let isSpinning = false;
+
+drawBtn.addEventListener('click', () => {
+  if (isSpinning) return;
+  isSpinning = true;
+  drawBtn.disabled = true;
+
+  // 1. 加权随机选
+  const expected = weightedPick();
+  const result = pity.apply(expected);
+  debug.textContent = `winner: ${result.id} ${result.name}`;
+
+  // 2. 收拢动画：5 张可视卡 → 全部 inner
+  const cards = reel.querySelectorAll('.card');
+  cards.forEach(c => c.classList.add('collapsed'));
+
+  // 3. 1500ms 后渲染 reel + 触发老虎机滚动
+  setTimeout(() => {
+    renderReel(result.id);
+    const cardWidth = 100;  // 96 + 4*2 margin
+    const offset = SlotLayout.finalOffset(cardWidth);
+    // reel 当前已 translateX(-50%, -50%), 老虎机需要叠加 translateX
+    reel.style.transition = `transform ${ANIM.SPIN_DURATION}ms ${ANIM.SPIN_EASING}`;
+    // 强制 reflow 触发 transition
+    void reel.offsetWidth;
+    reel.style.transform = `translate(-50%, -50%) translateX(${offset}px)`;
+
+    // 4. 老虎机停止后显示弹窗
+    setTimeout(() => {
+      showResult(result);
+      isSpinning = false;
+      drawBtn.disabled = false;
+    }, ANIM.SPIN_DURATION + 200);
+  }, ANIM.COLLAPSE_DURATION);
+});
+
+function showResult(coupon) {
+  popupFlavor.textContent = coupon.flavor;
+  popupName.textContent = coupon.name;
+  popupDiscount.textContent = coupon.discount;
+  popup.classList.add('show');
+}
+
+closePopup.addEventListener('click', () => {
+  popup.classList.remove('show');
+  // 重置 reel 到初始 5 张
+  setTimeout(() => {
+    reel.style.transition = 'none';
+    reel.style.transform = 'translate(-50%, -50%) translateX(0)';
+    renderInitialCards();
+  }, 300);
+});
+</script>
+</body>
+</html>

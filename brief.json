@@ -1,0 +1,67 @@
+{
+  "play_type": "five_coupon_arc_draw",
+  "visual_style": "元气可爱风 kawaii / 夏日冷饮店 / 治愈清新",
+  "event_title": "传招冷饮",
+  "event_title_pinyin": "Zhao Zhao Cold Drinks",
+  "event_subtitle": "夏日冰爽特惠",
+  "cta_button": "立即抽奖",
+
+  "theme": "Summer cold drink shop counter, iced milk tea glasses with boba pearls, mint leaves, ice cubes, sunbeams through wood, refreshing and cute kawaii style",
+
+  "color_palette": {
+    "primary": "#A0826D",
+    "base": "#FFF8E7",
+    "accent": "#A8E6CF",
+    "highlight": "#F4C95D"
+  },
+
+  "greenscreen": {
+    "color": "#00FF00",
+    "band_width": "~5px"
+  },
+
+  "regions": {
+    "left":   { "width_ratio": "1/3", "type": "full visual preview" },
+    "middle": { "width_ratio": "1/3", "type": "background only" },
+    "right":  { "width_ratio": "1/3", "type": "UI element inventory" }
+  },
+
+  "canvases": {
+    "left":   { "width": "~486px", "height": "~864px", "padding": "~13px greenscreen" },
+    "middle": { "width": "~486px", "height": "~864px", "padding": "~13px greenscreen" },
+    "right":  { "width": "~486px", "height": "~864px", "padding": "~13px greenscreen" }
+  },
+
+  "content": {
+    "left_panel": {
+      "logo": "传招冷饮",
+      "subtitle": "夏日冰爽特惠",
+      "top_button": "说明",
+      "focus_character": "Q版奶茶杯吉祥物（透明玻璃杯里装奶茶+奶盖+珍珠，戴小草帽，微笑，飘着冰块和薄荷叶）",
+      "cards_layout": "5 cards in gentle arc, position 3 = center largest",
+      "bottom_button": "立即抽奖",
+      "background": "Summer cold drink shop counter, iced milk tea glasses with boba pearls and brown sugar syrup layers, mint leaves and ice cubes scattered, light wood counter, sunbeams through window, cute kawaii style, refreshing and lively"
+    },
+    "middle_panel": {
+      "content_description": "FULL background layer with: top logo (传招冷饮) + subtitle (夏日冰爽特惠) + focus character (Q版奶茶杯戴草帽) + scene (wooden counter, sunbeams, mint leaves, ice cubes) + decorations. This is the pure visual base layer. NO interactive elements: NO 5 coupon cards, NO top round help button, NO bottom CTA button, NO highlight glow ring."
+    },
+    "right_panel": {
+      "background": "pure #00FF00 green-screen",
+      "elements": [
+        "1 small round top button",
+        "5 coupon card containers",
+        "1 bottom CTA button",
+        "1 highlight glow ring"
+      ],
+      "element_count": 8
+    }
+  },
+
+  "coupons": {
+    "C1": { "discount": "9.8折", "name": "奶茶券", "probability": "30%", "rarity": "common" },
+    "C2": { "discount": "9折",   "name": "奶茶券", "probability": "30%", "rarity": "common" },
+    "C3": { "discount": "8折",   "name": "奶茶券", "probability": "20%", "rarity": "common" },
+    "C4": { "discount": "7折",   "name": "奶茶券", "probability": "15%", "rarity": "rare" },
+    "C5": { "discount": "5折",   "name": "奶茶券", "probability": "5%",  "rarity": "rare" }
+  }
+}
