@@ -1,10 +1,12 @@
 # ============ 测试产物（不提交）============
 # 5 次重跑测试图
 triptych-run*.png
+# 旧版本备份（v1/v2 在 git history 008f12d）
+triptych.png
+triptych-v1.png
+triptych-v2.png
 # opencli 临时输出（带时间戳）
 chatgpt_*.png
-# 旧版本备份
-triptych.png
 # 系统文件
 .DS_Store
 Thumbs.db
