@@ -254,6 +254,19 @@ function renderArcCards() {
 }
 renderArcCards();
 
+// ====== 响应式缩放：把 360×640 canvas 缩到 viewport 内（手机竖屏不被截切） ======
+function fitCanvas() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = 16;
+  const scale = Math.min((vw - margin*2) / 360, (vh - margin*2) / 640);
+  phone.style.transformOrigin = 'center center';
+  phone.style.transform = `scale(${scale})`;
+}
+fitCanvas();
+window.addEventListener('resize', fitCanvas);
+window.addEventListener('orientationchange', fitCanvas);
+
 // ====== 渲染老虎机 reel ======
 function renderReel(winnerId) {
   reel.innerHTML = '';
